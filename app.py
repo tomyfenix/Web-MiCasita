@@ -14,8 +14,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-MODEL_PATH = "random_forest_model_100T_15D_5S_5L_114MB_1247MAE.pkl"
-DRIVE_FILE_ID = "1agQxtkE1qA2eAwbJaq2lGclkGhjMqqZ5"  # <-- reemplazá por el ID real de tu archivo en Drive
+MODEL_PATH = "random_forest_model_render_compat.pkl"
+DRIVE_FILE_ID = "1F2k8Ym2v5IAm8elxmyVYgsR8FoYIwgSy"  # <-- reemplazá por el ID real de tu archivo en Drive
 
 def descargar_modelo():
     if not os.path.exists(MODEL_PATH):
