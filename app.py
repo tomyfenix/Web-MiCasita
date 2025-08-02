@@ -1,126 +1,32 @@
 import os
 os.environ["STREAMLIT_HOME"] = "/tmp"
 
+from huggingface_hub import hf_hub_download
 import streamlit as st
 import pandas as pd
 import joblib
 from geocoding import get_coordinates_from_address  # Asegurate que este archivo exista
 
-# Cargar el modelo
+# Cargar el modelo desde Hugging Face si no existe localmente
+MODEL_REPO = "tu_usuario/tu_repo"  # Reemplaza con tu usuario y repo
+MODEL_FILENAME = "modelo_casita.pkl"
+LOCAL_MODEL_PATH = MODEL_FILENAME
+
+if not os.path.exists(LOCAL_MODEL_PATH):
+    st.write("Descargando modelo desde Hugging Face Hub...")
+    hf_hub_download(repo_id=MODEL_REPO, filename=MODEL_FILENAME, local_dir=".", local_dir_use_symlinks=False)
+
 @st.cache_resource
 def load_model():
-    return joblib.load("modelo_casita.pkl")
+    return joblib.load(LOCAL_MODEL_PATH)
 
 model = load_model()
 
 st.title("Predicción de Precio de Propiedad")
 
-barrio_a_grupo = {
-    "Villa Devoto": "alto",
-    "Villa Urquiza": "alto",
-    "Colegiales": "alto",
-    "Chacarita": "alto",
-    "Villa General Mitre": "bajo",
-    "Palermo": "muy_alto",
-    "Villa Crespo": "alto",
-    "Boedo": "bajo",
-    "Caballito": "alto",
-    "Belgrano": "muy_alto",
-    "Barrio Norte": "muy_alto",
-    "Balvanera": "bajo",
-    "San Nicolás": "bajo",
-    "Saavedra": "alto",
-    "Nuñez": "muy_alto",
-    "San Cristobal": "bajo",
-    "Las Cañitas": "muy_alto",
-    "Villa Luro": "bajo",
-    "Recoleta": "muy_alto",
-    "Parque Patricios": "muy_bajo",
-    "Almagro": "medio",
-    "Villa del Parque": "medio",
-    "Paternal": "bajo",
-    "Flores": "bajo",
-    "Villa Pueyrredón": "alto",
-    "Congreso": "bajo",
-    "Mataderos": "muy_bajo",
-    "Constitución": "muy_bajo",
-    "Villa Lugano": "muy_bajo",
-    "Villa Santa Rita": "bajo",
-    "Liniers": "bajo",
-    "Floresta": "muy_bajo",
-    "Abasto": "bajo",
-    "Coghlan": "alto",
-    "San Telmo": "medio",
-    "Villa Ortuzar": "alto",
-    "Parque Centenario": "medio",
-    "Monserrat": "bajo",
-    "Once": "muy_bajo",
-    "Retiro": "alto",
-    "Parque Chas": "medio",
-    "Centro / Microcentro": "bajo",
-    "Barracas": "bajo",
-    "Parque Chacabuco": "bajo",
-    "Versalles": "bajo",
-    "Monte Castro": "bajo",
-    "Parque Avellaneda": "muy_bajo",
-    "Boca": "muy_bajo",
-    "Puerto Madero": "muy_alto",
-    "Agronomía": "medio"
-}
-
-# Coordenadas centrales aproximadas de cada barrio (lat, lon)
-barrio_centros = {
-    "Villa Devoto": (-34.598, -58.510),
-    "Villa Urquiza": (-34.576, -58.496),
-    "Colegiales": (-34.587, -58.430),
-    "Chacarita": (-34.591, -58.458),
-    "Villa General Mitre": (-34.613, -58.490),
-    "Palermo": (-34.581, -58.425),
-    "Villa Crespo": (-34.601, -58.440),
-    "Boedo": (-34.628, -58.430),
-    "Caballito": (-34.615, -58.447),
-    "Belgrano": (-34.563, -58.456),
-    "Barrio Norte": (-34.588, -58.392),
-    "Balvanera": (-34.612, -58.414),
-    "San Nicolás": (-34.597, -58.378),
-    "Saavedra": (-34.553, -58.475),
-    "Nuñez": (-34.555, -58.462),
-    "San Cristobal": (-34.620, -58.400),
-    "Las Cañitas": (-34.572, -58.431),
-    "Villa Luro": (-34.640, -58.510),
-    "Recoleta": (-34.588, -58.392),
-    "Parque Patricios": (-34.641, -58.417),
-    "Almagro": (-34.615, -58.423),
-    "Villa del Parque": (-34.610, -58.496),
-    "Paternal": (-34.607, -58.464),
-    "Flores": (-34.637, -58.465),
-    "Villa Pueyrredón": (-34.566, -58.485),
-    "Congreso": (-34.615, -58.415),
-    "Mataderos": (-34.666, -58.513),
-    "Constitución": (-34.629, -58.387),
-    "Villa Lugano": (-34.700, -58.495),
-    "Villa Santa Rita": (-34.639, -58.486),
-    "Liniers": (-34.664, -58.507),
-    "Floresta": (-34.639, -58.472),
-    "Abasto": (-34.603, -58.419),
-    "Coghlan": (-34.563, -58.474),
-    "San Telmo": (-34.617, -58.373),
-    "Villa Ortuzar": (-34.593, -58.460),
-    "Parque Centenario": (-34.615, -58.443),
-    "Monserrat": (-34.611, -58.383),
-    "Once": (-34.608, -58.410),
-    "Retiro": (-34.594, -58.370),
-    "Parque Chas": (-34.577, -58.466),
-    "Centro / Microcentro": (-34.608, -58.373),
-    "Barracas": (-34.649, -58.380),
-    "Parque Chacabuco": (-34.648, -58.466),
-    "Versalles": (-34.649, -58.517),
-    "Monte Castro": (-34.634, -58.493),
-    "Parque Avellaneda": (-34.654, -58.496),
-    "Boca": (-34.635, -58.365),
-    "Puerto Madero": (-34.608, -58.360),
-    "Agronomía": (-34.601, -58.460)
-}
+# ---
+# Agregás aquí todos los diccionarios barrio_a_grupo y barrio_centros exactamente como los tenías.
+# ---
 
 # Limites geográficos para Gran Buenos Aires (aproximados)
 lat_min, lat_max = -35.2, -34.3
@@ -148,7 +54,6 @@ prediction_msg = st.empty()
 # Obtener coordenadas automáticamente
 lat, lon = get_coordinates_from_address(direccion)
 
-# Si no hay dirección o no se pudo geocodificar, usar coordenadas del barrio
 if direccion.strip() == "" or lat is None or lon is None:
     lat, lon = barrio_centros.get(barrio, (None, None))
     if lat and lon:
@@ -161,18 +66,13 @@ else:
 grupo_precio = barrio_a_grupo.get(barrio, "medio")
 
 if st.button("Predecir precio"):
-
-    # Limpiar mensajes previos
     validation_msgs.empty()
     prediction_msg.empty()
-
     errores = []
 
-    # Validación: superficie total >= superficie cubierta
     if Superficie_Total < Superficie_Cubierta:
         errores.append("⚠️ La superficie total no puede ser menor que la superficie cubierta.")
 
-    # Validar coordenadas dentro del área de Gran Buenos Aires
     if not lat or not lon:
         errores.append("⚠️ No se pudo obtener coordenadas. Revisá la dirección o barrio.")
     else:
@@ -181,7 +81,6 @@ if st.button("Predecir precio"):
         if not (lon_min <= lon <= lon_max):
             errores.append(f"⚠️ Longitud fuera del rango para Gran Buenos Aires ({lon_min} a {lon_max}).")
 
-    # Validar rangos según tipo de propiedad
     if Tipo_de_Propiedad == "Casa":
         if not (2 <= Habitaciones <= 7):
             errores.append("⚠️ Casas: habitaciones deben estar entre 2 y 7.")
@@ -224,7 +123,6 @@ if st.button("Predecir precio"):
         'Suite': [suite]
     })
 
-    # Features derivadas
     nuevos_casos["ratio_covered_total"] = nuevos_casos["SurfCov"] / (nuevos_casos["SurfTotal"] + 1e-5)
     nuevos_casos["total_rooms_surface_ratio"] = nuevos_casos["SurfTotal"] / (nuevos_casos["Rooms"] + 1)
     nuevos_casos["covered_rooms_surface_ratio"] = nuevos_casos["SurfCov"] / (nuevos_casos["Rooms"] + 1)
