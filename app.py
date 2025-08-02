@@ -8,7 +8,7 @@ import joblib
 from geocoding import get_coordinates_from_address  # Asegurate que este archivo exista
 
 # Cargar el modelo desde Hugging Face si no existe localmente
-MODEL_REPO = "tu_usuario/tu_repo"  # Reemplaza con tu usuario y repo
+MODEL_REPO = "TomasFenix/MiCasita"  # Reemplaza con tu usuario y repo
 MODEL_FILENAME = "modelo_casita.pkl"
 LOCAL_MODEL_PATH = MODEL_FILENAME
 
